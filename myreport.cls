@@ -68,6 +68,7 @@
 \RequirePackage{courier}
 \RequirePackage{lettrine} %
 \RequirePackage{afterpage}
+\RequirePackage{pdfpages}
 
 \RequirePackage{tikz} % Pacote para desenhos (fig:diagrama)
 \RequirePackage{bm} % Pacote para criação do modelo de RSsF (fig:model_rssf)
