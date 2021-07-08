@@ -39,8 +39,10 @@ pdfview = {XYZ null null null}
 \ano{2021}
 
 \begin{document}
+\newgeometry{top=2.5cm,bottom=2.5cm,left=3cm,right=2cm,heightrounded}
 \capa
 \folhaDeRosto
+\newgeometry{top=2.5cm,bottom=2.5cm,left=3cm,right=2cm,includefoot,heightrounded}
 \newpage
 \tableofcontents
 \newpage
@@ -101,10 +103,6 @@ Supervisor & & Estagiário \\
 %------------------------------------------------------------------------------
 % REFERÊNCIAS BIBLIOGRÁFICAS UTILIZADAS NO TRABALHO
 %------------------------------------------------------------------------------
-\newpage
-\renewcommand\bibname{\large Referências}
-\renewcommand\refname{Referências}
 \bibliography{ref}
-\addcontentsline{toc}{chapter}{Referências}
 
 \end{document}

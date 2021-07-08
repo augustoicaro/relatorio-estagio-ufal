@@ -31,7 +31,8 @@
 \RequirePackage[T1]{fontenc} % Definição da codificação das fontes como T1
 \RequirePackage[brazil,portuguese]{babel} % Definição para uso dos caracteres acentuados
 \RequirePackage[utf8]{inputenc} % Codificação dos caracteres utilizada
-\RequirePackage[a4paper]{geometry} % Para ajustar o papel
+\RequirePackage[a4paper,top=2.5cm,bottom=2.5cm,left=3cm,right=2cm,includeheadfoot,heightrounded]{geometry} % Para ajustar o papel
+\RequirePackage[nottoc,numbib,notlof,notlot]{tocbibind}
 \RequirePackage{float} % Pacote necessário para modificação dos capitulos
 \RequirePackage{titlesec, blindtext} % Permite modificar a forma dos capitulos de forma simples
 \RequirePackage{setspace} % Definição dos espaçamemtos entre linhas
@@ -46,7 +47,7 @@
 \RequirePackage{url} % Para lidar com URLs
 \RequirePackage{hyperref} % Para fazer referência
 \RequirePackage{indentfirst} % Sempre identa a primeira linha
-\RequirePackage{doc} % Contém a definição da logomarca do BibTex
+% \RequirePackage{doc} % Contém a definição da logomarca do BibTex
 \RequirePackage{color,colortbl, xcolor} % Permite "pintar" as tabelas
 \RequirePackage[active]{srcltx} % Busca inversa do dvi para o tex
 \RequirePackage{ifthen} % Utilização de condicionais em latex
@@ -62,10 +63,11 @@
 \RequirePackage{fontawesome}
 \RequirePackage{fourier}
 \RequirePackage[euler-digits]{eulervm}
-\RequirePackage{eucal} 
+\RequirePackage{eucal}
 \RequirePackage{ae}
 \RequirePackage{courier}
 \RequirePackage{lettrine} %
+\RequirePackage{afterpage}
 
 \RequirePackage{tikz} % Pacote para desenhos (fig:diagrama)
 \RequirePackage{bm} % Pacote para criação do modelo de RSsF (fig:model_rssf)
@@ -75,6 +77,7 @@
 
 \RequirePackage[ruled,chapter]{algorithm}
 \RequirePackage{algpseudocode}
+%\RequirePackage{showframe}
 
 \RequirePackage[brazilian,hyperpageref]{backref}%
 % Usado sem a opção hyperpageref de backref
@@ -112,6 +115,7 @@
 \renewcommand{\cfttoctitlefont}{\large\bfseries} %!some command to make the heading huge and bold
 \renewcommand{\cftpartleader}{\cftdotfill{\cftdotsep}} % for parts
 \renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}} % for chapters
+\setlength{\cftbeforetoctitleskip}{-0.5cm}
 %\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % for sections, if you really want! (It is default in report and book class (So you may not need it).
 
 %%------------------------------------------------------------------------------
@@ -124,12 +128,27 @@
 %%------------------------------------------------------------------------------
 %% Redefinindo capítulo
 %%------------------------------------------------------------------------------
-\newcommand{\hsp}{\hspace{20pt}}
+\let\stdchapter\chapter
+\renewcommand*\chapter{%
+  \@ifstar{\starchapter}{\@dblarg\nostarchapter}}
+\newcommand*\starchapter[1]{\newgeometry{top=2.5cm,bottom=2.5cm,left=3cm,right=2cm,includefoot,heightrounded}\stdchapter*{#1 }
+\afterpage{
+\globaldefs=1
+\restoregeometry
+}
+}
+\def\nostarchapter[#1]#2{\newgeometry{top=2.5cm,bottom=2.5cm,left=3cm,right=2cm,includefoot,heightrounded}\stdchapter[{#1}]{#2}
+\afterpage{
+\globaldefs=1
+\restoregeometry
+}
+}
+
 \def\@makechapterhead#1{%
   %%%%\vspace*{50\p@}% %%% removed!
   {\parindent \z@ \raggedright \normalfont
-    \ifnum \c@secnumdepth >\m@ne
-        \large\bfseries \thechapter\hsp\textcolor[cmyk]{0.43, 0.35, 0.35,0.01}{|}\hsp #1
+    % \ifnum \c@secnumdepth >\m@ne
+        \large\bfseries \thechapter\quad\textcolor[cmyk]{0.43, 0.35, 0.35,0.01}{|}\quad #1
         \par\nobreak
         \vskip 20\p@
   }}
@@ -143,57 +162,9 @@
 % \setlength{\DefaultNindent}{0em}
 % \setlength{\DefaultSlope}{-.5em}
 
-
-% Comentário do abstract
-\newcommand{\comAbstract}[3]{
-\pdfmarkupcomment[color=white,author=#2,markup=Squiggly]{#1}{#3}
-}
-\newcommand{\doi}[1]{\textbf{DOI}~{\href{http://dx.doi.org/#1}{\color{Blue}#1}}}
-
-
-% Resumo do capítulo
-\newcommand{\resumocap}[1]{
-\vfill
-% \singlespacing
-\begin{center}
-\setlength\fboxsep{0.5pt}
-\setlength\fboxrule{2pt}
- \doublebox{\colorbox{light_gray}{\parbox{.9\linewidth}{
-#1
-}}}
-\end{center}
-}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                 DEFINIÇÃO DO LAYOUT DO DOCUMENTO                           %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%------------------------------------------------------------------------------
-%%  TAMANHOS VERTICAIS - COPIADO DO ESTILO PADRÃO DA ABNT - Pacote abntex.cls
-%%------------------------------------------------------------------------------
-% A distancia entre o topo do cabeçalho e o topo do texto é de 1cm, 
-% isto é, 1cm=\headheight+\headsep
-% ...mas, nós consideramos a profundidade do cabeçallho, adicionando 2mm.
-\setlength{\headsep}{1.2cm-\headheight}
-% A distância entre a borda do papel e o número deve ser de 2.5cm
-% 2.5cm=\topmargin+\voffset+1in
-\setlength{\topmargin}{2.5cm-1in-\voffset}
-% A borda inferior deve ser de 2.5cm
-% \paperheight=\topmargin+\voffset+1in+\headheight+\headsep+\textheight+2cm
-\setlength{\textheight}%
-{\paperheight-\topmargin-\voffset-1in-\headheight-\headsep-2.5cm}
-
-%%------------------------------------------------------------------------------
-%% TAMANHOS HORIZONTAIS - COPIADO DO ESTILO PADRÃO DA ABNT - Pacote abntex.cls
-%%------------------------------------------------------------------------------
-% A margem esquerda é de 3cm e a direita é igual a 2cm.
-\setlength{\oddsidemargin}{3cm-\hoffset-1in}
-% para compatibilidade com impressão frente e verso, o tamanho das margens 
-%deve ser alterado
-\setlength{\evensidemargin}{2cm-\hoffset-1in}
-% \paperwidth=\textwidth+\oddsidemargin+\hoffset+1in+2cm
-\setlength{\textwidth}{\paperwidth-\oddsidemargin-\hoffset-1in-2cm}
 
 %%------------------------------------------------------------------------------
 %% Define o cabeçalho das páginas
@@ -202,13 +173,13 @@
 \fancyhf{}
 
 % Define a aparição do nome da seção no cabeçalho(esquerda)
-\lhead{\rightmark} 
+\lhead{\leftmark}
 
 % Define a aparição do número da página no cabeçalho(direita)
 \rhead{\thepage} % Número da página
 
 % Define a largura da barra
-\renewcommand{\headrulewidth}{0.6pt} 
+\renewcommand{\headrulewidth}{0.6pt}
 
 % Define a altura do cabeçalho
 \addtolength{\headheight}{3.05pt}
@@ -231,10 +202,11 @@
     \vspace*{4cm} \large \textbf{Relatório de Estágio Curricular em\\\@autorCurso}\\%
     \vspace*{4cm}%
     \large \@autorNome \\ \normalsize \texttt{\@autorEmail}\\%
-    \normalsize \vfill \@cidade\\\@ano%
+    \normalsize
   \end{center}%
-  \renewcommand{\thepage}{\roman{page}} \setcounter{page}{0}%
-  \normalsize%
+  \vfill
+  \centerline{\@cidade}
+  \centerline{\@ano}
 }%
 
 %%------------------------------------------------------------------------------
@@ -271,21 +243,12 @@
     Jornada de trabalho: \@estagioSemanal\ horas semanais\\
     Total de horas: \@estagioTotal\ horas em \@estagioDescritivo\\
     \end{flushleft}
-    \normalsize \vfill \@cidade\\\@ano%
+    \normalsize
     \end{center}%
-    \renewcommand{\thepage}{\roman{page}} \setcounter{page}{0}%
-    \normalsize%
+    \vfill
+    \centerline{\@cidade}
+    \centerline{\@ano}
 }%
-
-%%------------------------------------------------------------------------------
-%% Definição do comando APROVACAO
-%%------------------------------------------------------------------------------
-
-%%------------------------------------------------------------------------------
-%% Contador de assinaturas
-%%------------------------------------------------------------------------------
-\newcounter{numeroDeAssinaturas}
-\setcounter{numeroDeAssinaturas}{2}
 
 %%------------------------------------------------------------------------------
 %% Definição do comando INICIO para formatação de páginas
@@ -345,12 +308,12 @@
 }%
 
 %%------------------------------------------------------------------------------
-%% Definição do comando DATA
+%% Definição do comando ANO
 %%------------------------------------------------------------------------------
 \newcommand{\@ano}{}
 \newcommand{\ano}[1]{
     \renewcommand{\@ano}{#1}%
-}%Fim de DATA
+}%Fim de ANO
 
 %%------------------------------------------------------------------------------
 %% Definição do comando CIDADE
@@ -432,12 +395,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \AtBeginDocument{
     \normalsize
-    %% Configura para utilizar o cabeçalho e rodapé definidos anteriormente.    
+    %% Configura para utilizar o cabeçalho e rodapé definidos anteriormente.
     \pagestyle{fancy}
-    %% Define o módulo de citação abreviado(Harvard)
-    %\citationmode{abbr}
-    %% Define o estilo bibligráfico agsm(Harvard)
-    %\bibliographystyle{agsm}
     \bibliographystyle{abnt-alf}
 }
 
@@ -445,3 +404,9 @@
 %% Desabilita a utilização de arroba
 %%------------------------------------------------------------------------------
 \makeatother
+
+
+%%------------------------------------------------------------------------------
+%% Finaliza arquivo
+%%------------------------------------------------------------------------------
+\endinput
